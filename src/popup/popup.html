@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jevvit</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <img src="../icons/icon-32.png" alt="" width="24" height="24" />
+      <h1>Jevvit</h1>
+      <label class="switch">
+        <input id="enabled" type="checkbox" role="switch" />
+        <span id="enabledLabel">On</span>
+      </label>
+    </header>
+
+    <p id="status" role="status"></p>
+    <p id="problem" class="problem" hidden></p>
+
+    <dl id="stats" hidden>
+      <div><dt>Judged</dt><dd id="sJudged">0</dd></div>
+      <div><dt>Filtered</dt><dd id="sFiltered">0</dd></div>
+      <div><dt>Dimmed</dt><dd id="sUnsure">0</dd></div>
+      <div><dt>Left alone</dt><dd id="sShown">0</dd></div>
+    </dl>
+
+    <div class="actions">
+      <button id="pause" type="button" hidden>Show everything on this page</button>
+      <button id="settings" type="button" class="secondary">Settings</button>
+    </div>
+
+    <script src="../lib/core.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

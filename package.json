@@ -1,0 +1,15 @@
+{
+  "name": "jevvit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Filter Reddit with Jev: a browser extension (Firefox and Chrome) that judges each story against your prompt.",
+  "license": "UNLICENSED",
+  "repository": "github:coljac/jevvit",
+  "scripts": {
+    "test": "node --test \"test/*.test.mjs\"",
+    "build": "node scripts/build.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

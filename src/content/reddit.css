@@ -1,0 +1,94 @@
+/*
+ * What each state of a post looks like. The content script sets data-jevvit on
+ * the element that wraps a post (new Reddit's <article>, old Reddit's .thing).
+ */
+
+/* Waiting for Jev: out of sight, but keeping its space so the page doesn't jump about. */
+[data-jevvit='hold'] {
+  visibility: hidden !important;
+}
+
+/* Filtered out entirely, along with the divider that followed it. */
+[data-jevvit='hidden'],
+[data-jevvit-sep='hidden'] {
+  display: none !important;
+}
+
+/* Collapsed: everything inside goes except our one-line stub. */
+[data-jevvit='collapsed'] > :not(.jevvit-stub) {
+  display: none !important;
+}
+
+/* Dimmed: "unsure" is a nudge, a confident match is strongly faded. Hover brings either back. */
+[data-jevvit='unsure'] {
+  opacity: 0.6 !important;
+}
+
+[data-jevvit='dimmed'] {
+  opacity: 0.2 !important;
+  filter: grayscale(1) !important;
+}
+
+[data-jevvit='unsure'],
+[data-jevvit='dimmed'] {
+  transition: opacity 0.15s ease;
+}
+
+[data-jevvit='unsure']:hover,
+[data-jevvit='dimmed']:hover {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* The collapsed one-liner. It borrows the page's text colour, so it suits light and dark themes alike. */
+.jevvit-stub {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 4px 0;
+  padding: 7px 12px;
+  border: 1px dashed color-mix(in srgb, currentColor 35%, transparent);
+  border-radius: 8px;
+  color: inherit;
+  font: 13px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.jevvit-stub:hover,
+.jevvit-stub:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.jevvit-stub:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.jevvit-stub__label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.jevvit-stub__title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jevvit-stub__meta {
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.jevvit-stub__show {
+  text-decoration: underline;
+  white-space: nowrap;
+}

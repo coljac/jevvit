@@ -1,0 +1,23 @@
+{
+  "url": "https://api.typesafe.ai/v1/systemone",
+  "method": "POST",
+  "body": {
+    "state": {
+      "subreddit": "r/programming",
+      "title": "Show: a tiny Rust web framework",
+      "link_domain": "github.com",
+      "post_type": "link"
+    },
+    "model": "jev-latest",
+    "questions": {
+      "match": {
+        "type": "noul",
+        "instructions": "Is this post about web frameworks?",
+        "criteria": {
+          "true": "Announces or discusses a web framework.",
+          "false": "Anything else."
+        }
+      }
+    }
+  }
+}

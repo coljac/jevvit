@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jevvit settings</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <header class="masthead">
+        <img src="../icons/icon-48.png" alt="" width="44" height="44" />
+        <div>
+          <h1>Jevvit</h1>
+          <p class="lede">
+            Filter Reddit with Jev. Each story in a listing is judged against your prompt, and the ones you don't
+            want are collapsed, hidden or dimmed.
+          </p>
+        </div>
+      </header>
+
+      <p id="banner" class="banner" role="status" hidden></p>
+
+      <form id="form" autocomplete="off" novalidate>
+        <section class="card" aria-labelledby="h-connect">
+          <h2 id="h-connect">1. Connect to Jev</h2>
+
+          <label for="apiKey">TypeSafe API key</label>
+          <div class="row">
+            <input id="apiKey" type="password" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Paste your key" />
+            <button type="button" id="toggleKey" class="secondary" aria-pressed="false">Show</button>
+          </div>
+          <p class="hint">
+            Kept in this browser only and never synced. It goes nowhere but the API address below, and Reddit's
+            pages never see it. Make a key just
+            for Jevvit at <a href="https://console.typesafe.ai/settings/keys" target="_blank" rel="noreferrer noopener">console.typesafe.ai</a>
+            so you can revoke it on its own.
+          </p>
+
+          <div id="access" class="access" hidden>
+            <p id="accessText"></p>
+            <button type="button" id="grant">Grant access</button>
+          </div>
+
+          <details>
+            <summary>Advanced</summary>
+            <label for="model">Model</label>
+            <input id="model" type="text" spellcheck="false" placeholder="jev-latest" />
+            <p class="hint">
+              <code>jev-latest</code> moves to newer releases as they appear. Pin a versioned name such as
+              <code>jev-1.13.0</code> if you want the same judgement every time.
+            </p>
+            <label for="baseUrl">API address</label>
+            <input id="baseUrl" type="text" spellcheck="false" placeholder="https://api.typesafe.ai" />
+            <p id="baseUrlError" class="error" hidden></p>
+            <p class="hint">Only change this for a proxy or a local test server. It must be https (or http on localhost).</p>
+          </details>
+        </section>
+
+        <section class="card" aria-labelledby="h-filter">
+          <h2 id="h-filter">2. What should it filter?</h2>
+
+          <label for="prompt">Describe the stories</label>
+          <textarea id="prompt" rows="3" placeholder="e.g. Is this story mostly political outrage, celebrity gossip or rage-bait?"></textarea>
+          <p class="hint">
+            Plain English, as a question or a statement. Make it a yes/no that can be answered from the title, the
+            subreddit and the link: <em>Is this about …?</em> works well. Jev only ever answers with a probability, so
+            a post can't make it do anything else, but posts are written by strangers who may try to sway it: expect
+            the odd miss.
+          </p>
+
+          <fieldset>
+            <legend>What to do with a match</legend>
+            <label class="choice"><input type="radio" name="mode" value="hide" /><span>Filter out stories that <strong>match</strong> my description</span></label>
+            <label class="choice"><input type="radio" name="mode" value="keep" /><span>Only show stories that <strong>match</strong>, filter out the rest</span></label>
+          </fieldset>
+
+          <details>
+            <summary>Sharpen the boundary (optional)</summary>
+            <p class="hint">
+              Often the prompt alone is enough. If Jev is getting the grey areas wrong, say what counts on each side,
+              including the case you'd have to think about yourself.
+            </p>
+            <label for="trueCriteria">A match is…</label>
+            <textarea id="trueCriteria" rows="2" placeholder="e.g. Election coverage, partisan commentary, or a post whose main point is to make readers angry."></textarea>
+            <label for="falseCriteria">Not a match is…</label>
+            <textarea id="falseCriteria" rows="2" placeholder="e.g. A calm explainer on how a policy works, even if the topic is political."></textarea>
+          </details>
+        </section>
+
+        <section class="card" aria-labelledby="h-strict">
+          <h2 id="h-strict">3. How strict?</h2>
+          <p id="rule" class="rule"></p>
+
+          <div class="slider">
+            <label for="hideAt">Filter out at <output id="hideAtOut"></output> confidence</label>
+            <input id="hideAt" type="range" min="50" max="99" step="1" />
+          </div>
+          <div class="slider">
+            <label for="unsureAt">Dim when unsure from <output id="unsureAtOut"></output></label>
+            <input id="unsureAt" type="range" min="0" max="95" step="1" />
+          </div>
+          <p class="hint">
+            Jev answers with a probability, so a story it is only 55% sure about is better nudged than removed.
+            Raise the first slider to filter less; set the second to 0 to switch dimming off.
+          </p>
+
+          <fieldset>
+            <legend>Filtered stories are</legend>
+            <label class="choice"><input type="radio" name="action" value="collapse" /><span><strong>Collapsed</strong> to one line you can click open (recommended)</span></label>
+            <label class="choice"><input type="radio" name="action" value="hide" /><span><strong>Hidden</strong> completely</span></label>
+            <label class="choice"><input type="radio" name="action" value="dim" /><span><strong>Dimmed</strong>, and restored when you hover</span></label>
+          </fieldset>
+          <p class="hint">
+            Hiding completely can make Reddit load page after page to fill the screen if your prompt is strict;
+            collapsing avoids that.
+          </p>
+
+          <label class="check"><input id="holdUntilJudged" type="checkbox" /> Keep stories out of sight until Jev has judged them</label>
+          <label class="check"><input id="includeBody" type="checkbox" /> Also send the start of a text post's body</label>
+          <div class="row inline" id="bodyRow">
+            <label for="maxBodyChars">Characters of body to send</label>
+            <input id="maxBodyChars" type="number" min="0" max="4000" step="50" />
+          </div>
+          <p class="hint">
+            Sent to Jev for each story: the subreddit, title, flair, link domain, post type and (if enabled) that body
+            excerpt. Never your username, votes or anything from your account. Jev bills input only, about $0.04 per
+            million tokens: with a short prompt, roughly a cent per thousand stories. Remembered verdicts cost nothing.
+          </p>
+        </section>
+
+        <section class="card" aria-labelledby="h-try">
+          <h2 id="h-try">4. Try it</h2>
+          <p class="hint">Judge one made-up or pasted story with the settings above, before saving. This sends one request.</p>
+          <label for="tryTitle">Title</label>
+          <input id="tryTitle" type="text" placeholder="Paste a post title" />
+          <div class="grid2">
+            <div>
+              <label for="trySubreddit">Subreddit</label>
+              <input id="trySubreddit" type="text" placeholder="r/technology" />
+            </div>
+            <div>
+              <label for="tryDomain">Link domain</label>
+              <input id="tryDomain" type="text" placeholder="example.com" />
+            </div>
+          </div>
+          <label for="tryText">Text (optional)</label>
+          <textarea id="tryText" rows="2"></textarea>
+          <div class="row">
+            <button type="button" id="tryButton" class="secondary">Judge this story</button>
+            <span id="tryResult" role="status" class="result"></span>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="h-more">
+          <h2 id="h-more">Exceptions and housekeeping</h2>
+          <label class="check"><input id="enabled" type="checkbox" /> Filtering is switched on</label>
+
+          <label for="exemptSubreddits">Never filter these subreddits</label>
+          <textarea id="exemptSubreddits" rows="2" placeholder="r/AskReddit, r/mylocalcity"></textarea>
+
+          <div class="row inline">
+            <span id="cacheInfo" class="hint"></span>
+            <button type="button" id="clearCache" class="secondary">Clear remembered verdicts</button>
+          </div>
+        </section>
+
+        <div class="savebar">
+          <button type="submit" id="save">Save settings</button>
+          <span id="saved" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </main>
+
+    <script src="../lib/core.js"></script>
+    <script src="../lib/cache.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
